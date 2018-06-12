@@ -1,0 +1,149 @@
+﻿@using BaseFrame.Core.Enums;
+@model List<SuncerePermission>
+@{
+    DateTime? startTime = ViewData["startTime"] as DateTime?;
+    DateTime? endTime = ViewData["endTime"] as DateTime?;
+    string timeFormat = "yyyy-MM-dd HH:mm";
+}
+
+<form action="/System/PermissionList" method="get" class="form form-horizontal" id="form">
+    <div class="text-c">
+        @LanguageHelper.L("CreationTime")：
+        <input type="text" onfocus="WdatePicker({ dateFmt: '@timeFormat', maxDate: '#F{$dp.$D(\'endTime\')||\'%y-%M-%d %H:%m\'}' })" id="startTime" name="startTime" class="input-text Wdate" style="width:160px;" value="@(startTime.HasValue?startTime.Value.ToString(timeFormat):"")">
+        -
+        <input type="text" onfocus="WdatePicker({ dateFmt: '@timeFormat', minDate: '#F{$dp.$D(\'startTime\')}', maxDate: '%y-%M-%d %H:%m' })" id="endTime" name="endTime" class="input-text Wdate" style="width:160px;" value="@(endTime.HasValue?endTime.Value.ToString(timeFormat):"")">
+        <input type="text" class="input-text" style="width:250px" placeholder="@LanguageHelper.L("请输入名称、控制器或方法名关键字")" id="keyword" name="keyword" value="@ViewData["keyword"]">
+        <button type="submit" class="btn btn-success" id="search"><i class="Hui-iconfont">&#xe665;</i> @LanguageHelper.L("Search")</button>
+    </div>
+</form>
+<div class="cl pd-5 bg-1 bk-gray mt-20">
+    <span class="l"> <a href="javascript:;" onclick="batchDel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> @LanguageHelper.L("批量删除")</a> <a href="javascript:;" onclick="add('@LanguageHelper.L("添加权限")', '/System/PermissionAdd' , '800' , '500')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> @LanguageHelper.L("添加权限")</a> </span>
+</div>
+<div class="mt-20">
+    <table class="table table-border table-bordered table-bg">
+        <thead>
+            <tr class="text-c">
+                <th width="25"><input type="checkbox" name="select"></th>
+                <th width="160">@LanguageHelper.L("Name")</th>
+                <th width="100">@LanguageHelper.L("Type")</th>
+                <th width="160">@LanguageHelper.L("Controller")</th>
+                <th width="160">@LanguageHelper.L("Action")</th>
+                <th width="160">@LanguageHelper.L("Order")</th>
+                <th>@LanguageHelper.L("Remark")</th>
+                <th width="160">@LanguageHelper.L("CreationTime")</th>
+                <th width="100">@LanguageHelper.L("Status")</th>
+                <th width="200">@LanguageHelper.L("Operation")</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (SuncerePermission item in Model)
+            {
+                <tr class="text-c">
+                    <td><input type="checkbox" value="@item.Id" name="check" @(item.IsStatic ? "disabled=disabled" : "")></td>
+                    <td>@item.Name</td>
+                    <td>@(item.Type == (int)PermissionType.Module ? LanguageHelper.L("Module") : LanguageHelper.L("Page"))</td>
+                    <td>@item.Controller</td>
+                    <td>@item.Action</td>
+                    <td>@item.Order</td>
+                    <td>@item.Remark</td>
+                    <td>@item.CreationTime.ToString(timeFormat)</td>
+                    @if (item.IsStatic)
+                    {
+                        <td class="td-status"><span class="label label-success radius">@LanguageHelper.L("Enable")</span></td>
+                        <td class="td-manage"></td>
+                    }
+                    else if (item.Status)
+                    {
+                        <td class="td-status"><span class="label label-success radius">@LanguageHelper.L("Enable")</span></td>
+                        <td class="td-manage"><a style="text-decoration:none" onClick="stop(this,'@item.Id')" href="javascript:;" title="@LanguageHelper.L("Disable")"><i class="Hui-iconfont">&#xe631;</i></a> <a title="@LanguageHelper.L("Edit")" href="javascript:;" onclick="edit('@LanguageHelper.L("编辑权限")', '/System/PermissionEdit', '@item.Id', '800', '500')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> <a title="@LanguageHelper.L("Delete")" href="javascript:;" onclick="del(this, '@item.Id')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
+
+                    }
+                    else
+                    {
+                        <td class="td-status"><span class="label radius">@LanguageHelper.L("Disable")</span></td>
+                        <td class="td-manage"><a style="text-decoration:none" onClick="start(this,'@item.Id')" href="javascript:;" title="@LanguageHelper.L("Enable")"><i class="Hui-iconfont">&#xe615;</i></a> <a title="@LanguageHelper.L("Edit")" href="javascript:;" onclick="edit('@LanguageHelper.L("编辑权限")', '/System/PermissionEdit', '@item.Id', '800', '500')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> <a title="@LanguageHelper.L("Delete")" href="javascript:;" onclick="del(this, '@item.Id')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section scripts{
+    <script type="text/javascript" src="/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+    <script type="text/javascript" src="/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="/lib/laypage/1.2/laypage.js"></script>
+    <script type="text/javascript">
+        /*增加*/
+        function add(title, url, w, h) {
+            layer_show(title, url, w, h);
+        }
+        /*删除*/
+        function del(obj, ids) {
+            layer.confirm('@LanguageHelper.L("确认要删除吗？")', function (index) {
+                $.ajax({
+                    url: '/System/PermissionDelete',
+                    method: 'POST',
+                    data: { ids: ids },
+                    success: function (result) {
+                        layer.msg(result.Message, { icon: result.Status ? 1 : 2, time: 1000 }, function () {
+                            if (result.Status) {
+                                location.replace(location.href);
+                            }
+                        });
+                    }
+                });
+            });
+        }
+        /*批量删除*/
+        function batchDel() {
+            var ids = [];
+            $("table tr > td:first-child input:checkbox:not(:disabled):checked").each(function () {
+                ids.push(this.value);
+            });
+            del(null, ids.join(','));
+        }
+        /*编辑*/
+        function edit(title, url, id, w, h) {
+            layer_show(title, url + "?id=" + id, w, h);
+        }
+
+        function enable(id, status) {
+            $.ajax({
+                url: '/System/PermissionEnable',
+                method: 'POST',
+                data: { id: id, status: status },
+                success: function (result) {
+                    layer.msg(result.Message, { icon: result.Status ? 1 : 2, time: 1000 }, function () {
+                        if (result.Status) {
+                            location.replace(location.href);
+                        }
+                    });
+                }
+            });
+        }
+        /*停用*/
+        function stop(obj, id) {
+            layer.confirm('@LanguageHelper.L("确认要停用吗？")', function (index) {
+                enable(id, false);
+            });
+        }
+        /*启用*/
+        function start(obj, id) {
+            layer.confirm('@LanguageHelper.L("确认要启用吗？")', function (index) {
+                enable(id, true);
+            });
+        }
+
+        $(document).ready(function () {
+            $("table").dataTable({
+                "aaSorting": [[7, "desc"]],//默认第几个排序
+                "bStateSave": true,//状态保存
+                "aoColumnDefs": [
+                    //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
+                    { "orderable": false, "aTargets": [0, 8] }// 不参与排序的列
+                ]
+            });
+        });
+    </script>
+}

@@ -1,0 +1,111 @@
+﻿@model SuncereUser
+@{
+    Layout = "~/Views/Shared/_FormLayout.cshtml";
+}
+
+<form action="/Home/CurrentUserEdit" method="post" class="form form-horizontal" id="form">
+    @Html.AntiForgeryToken()
+    @Html.Hidden("Id", Model.Id)
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>@LanguageHelper.L("UserName")：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            @Html.TextBox("UserName", Model.UserName, new { @class = "input-text", @readonly = "readonly" })
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">@LanguageHelper.L("OldPassword")：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            @Html.Password("OldPassword", "", new { @class = "input-text", @placeholder = LanguageHelper.L("OldPassword") })
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">@LanguageHelper.L("Password")：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            @Html.Password("Password", "", new { @class = "input-text", @placeholder = LanguageHelper.L("Password") })
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">@LanguageHelper.L("ConfirmPassword")：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            @Html.Password("ConfirmPassword", "", new { @class = "input-text", @placeholder = LanguageHelper.L("ConfirmPassword") })
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">@LanguageHelper.L("EmailAddress")：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            @Html.TextBox("EmailAddress", Model.EmailAddress, new { @class = "input-text", @placeholder = LanguageHelper.L("EmailAddress") })
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">@LanguageHelper.L("PhoneNumber")：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            @Html.TextBox("PhoneNumber", Model.PhoneNumber, new { @class = "input-text", @placeholder = LanguageHelper.L("PhoneNumber") })
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">@LanguageHelper.L("Remark")：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            <textarea name="Remark" class="textarea" placeholder="说点什么...256个字符以内" dragonfly="true" onKeyUp="$(this).Huitextarealength({ maxlength: 256 })">@Model.Remark</textarea>
+            <p class="textarea-numberbar"><em class="textarea-length">0</em>/256</p>
+        </div>
+    </div>
+    <div class="row cl">
+        <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+            <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+        </div>
+    </div>
+</form>
+
+@section scripts{
+    <script type="text/javascript">
+        $(function () {
+            $("#form").validate({
+                rules: {
+                    UserName: {
+                        required: true,
+                        minlength: 2,
+                        maxlength: 128
+                    },
+                    OldPassword: {
+                        minlength: 2,
+                        maxlength: 128
+                    },
+                    Password: {
+                        minlength: 2,
+                        maxlength: 128
+                    },
+                    ConfirmPassword: {
+                        equalTo: "#Password"
+                    },
+                    PhoneNumber: {
+                        isMobile: true,
+                    },
+                    EmailAddress: {
+                        email: true,
+                    },
+                    SuncereRoles: {
+                        required: true
+                    },
+                    Remark: {
+                        maxlength: 256
+                    }
+                },
+                onkeyup: false,
+                focusCleanup: true,
+                success: "valid",
+                submitHandler: function (form) {
+                    $(form).ajaxSubmit({
+                        success: function (result) {
+                            layer.msg(result.Message, { icon: result.Status ? 1 : 2, time: 1000 }, function () {
+                                var index = parent.layer.getFrameIndex(window.name);
+                                parent.location.replace(parent.location.href);
+                                parent.layer.close(index);
+                            });
+                        }
+                    });
+
+                }
+            });
+        });
+    </script>
+}

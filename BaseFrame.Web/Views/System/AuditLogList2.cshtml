@@ -1,0 +1,83 @@
+﻿@{
+    string timeFormat = "yyyy-MM-dd HH:mm";
+}
+
+<form action="/System/AuditLogList" method="get" class="form form-horizontal" id="form">
+    <div class="text-c">
+        @LanguageHelper.L("CreationTime")：
+        <input type="text" onfocus="WdatePicker({ dateFmt: '@timeFormat', maxDate: '#F{$dp.$D(\'endTime\')||\'%y-%M-%d %H:%m\'}' })" id="startTime" name="startTime" class="input-text Wdate" style="width:160px;">
+        -
+        <input type="text" onfocus="WdatePicker({ dateFmt: '@timeFormat', minDate: '#F{$dp.$D(\'startTime\')}', maxDate: '%y-%M-%d %H:%m' })" id="endTime" name="endTime" class="input-text Wdate" style="width:160px;">
+        <input type="text" class="input-text" style="width:250px" placeholder="@LanguageHelper.L("请输入用户名、网址或者主机名关键字")" id="keyword" name="keyword" value="@ViewData["keyword"]">
+        <button type="submit" class="btn btn-success" id="search"><i class="Hui-iconfont">&#xe665;</i> @LanguageHelper.L("Search")</button>
+    </div>
+</form>
+<div class="cl pd-5 bg-1 bk-gray mt-20">
+    <span class="l"> <a href="javascript:;" onclick="batchDel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> @LanguageHelper.L("批量删除")</a></span>
+</div>
+<div class="mt-20">
+    <table class="table table-border table-bordered table-bg">
+        <thead>
+            <tr class="text-c">
+                <th width="160">@LanguageHelper.L("UserName")</th>
+                <th width="200">@LanguageHelper.L("Url")</th>
+                <th>@LanguageHelper.L("Referrer")</th>
+                <th width="160">@LanguageHelper.L("HostName")</th>
+                <th width="160">@LanguageHelper.L("HostAddress")</th>
+                <th width="160">@LanguageHelper.L("CreationTime")</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+@section scripts{
+    <script type="text/javascript" src="/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+    <script type="text/javascript" src="/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="/lib/laypage/1.2/laypage.js"></script>
+    <script type="text/javascript">
+        /*删除*/
+        function del(obj, ids) {
+            layer.confirm('@LanguageHelper.L("确认要删除吗？")', function (index) {
+                $.ajax({
+                    url: '/System/AuditLogDelete',
+                    method: 'POST',
+                    data: { ids: ids },
+                    success: function (result) {
+                        layer.msg(result.Message, { icon: result.Status ? 1 : 2, time: 1000 }, function () {
+                            if (result.Status) {
+                                location.replace(location.href);
+                            }
+                        });
+                    }
+                });
+            });
+        }
+        /*批量删除*/
+        function batchDel() {
+            var ids = [];
+            $("table tr > td:first-child input:checkbox:not(:disabled):checked").each(function () {
+                ids.push(this.value);
+            });
+            del(null, ids.join(','));
+        }
+
+        $(document).ready(function () {
+            $("table").dataTable({
+                "searching": false,
+                "ordering": false,
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": "/System/AuditLogList2",
+                    "type":"POST",
+                    "data": function (d) {
+                        d.startTime = $("#startTime").val();
+                        d.endTime = $("#endTime").val();
+                        d.keyword = $("#keyword").val();
+                    }
+                }
+            });
+        });
+    </script>
+}

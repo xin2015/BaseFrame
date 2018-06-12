@@ -1,0 +1,100 @@
+﻿@using BaseFrame.Core.Enums;
+@{
+    Layout = "~/Views/Shared/_FormLayout.cshtml";
+    List<SuncerePermission> permissions = ViewData["SuncerePermissions"] as List<SuncerePermission>;
+    List<SuncerePermission> modules = permissions.Where(o => o.Type == (int)PermissionType.Module).ToList();
+    List<SuncerePermission> pages = permissions.Where(o => o.Type == (int)PermissionType.Page).ToList();
+}
+
+<form action="/System/RoleAdd" method="post" class="form form-horizontal" id="form">
+    @Html.AntiForgeryToken()
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>@LanguageHelper.L("Name")：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            @Html.TextBox("Name", "", new { @class = "input-text", @placeholder = LanguageHelper.L("Name") })
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">@LanguageHelper.L("权限设置")：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            @foreach (SuncerePermission module in modules)
+            {
+                <dl class="permission-list">
+                    <dt>
+                        <label><input type="checkbox" value="@module.Id" name="SuncerePermissions" />@module.Name</label>
+                    </dt>
+                    <dd>
+                        @foreach (SuncerePermission page in pages.Where(o => o.ParentId == module.Id))
+                        {
+                            <dl class="cl permission-list2">
+                                <dt>
+                                    <label><input type="checkbox" value="@page.Id" name="SuncerePermissions" />@page.Name</label>
+                                </dt>
+                            </dl>
+                        }
+                    </dd>
+                </dl>
+            }
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">@LanguageHelper.L("Remark")：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            <textarea name="Remark" class="textarea" placeholder="说点什么...256个字符以内" dragonfly="true" onKeyUp="$(this).Huitextarealength({ maxlength: 256 })"></textarea>
+            <p class="textarea-numberbar"><em class="textarea-length">0</em>/256</p>
+        </div>
+    </div>
+    <div class="row cl">
+        <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+            <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+        </div>
+    </div>
+</form>
+
+@section scripts{
+    <script type="text/javascript">
+        $(function () {
+            $("#form").validate({
+                rules: {
+                    Name: {
+                        required: true,
+                        minlength: 2,
+                        maxlength: 128
+                    },
+                    Remark: {
+                        maxlength: 256
+                    }
+                },
+                onkeyup: false,
+                focusCleanup: true,
+                success: "valid",
+                submitHandler: function (form) {
+                    $(form).ajaxSubmit({
+                        success: function (result) {
+                            layer.msg(result.Message, { icon: result.Status ? 1 : 2, time: 1000 }, function () {
+                                var index = parent.layer.getFrameIndex(window.name);
+                                parent.location.replace(parent.location.href);
+                                parent.layer.close(index);
+                            });
+                        }
+                    });
+                }
+            });
+
+            $(".permission-list dt input:checkbox").click(function () {
+                $(this).closest("dl").find("dd input:checkbox").prop("checked", $(this).prop("checked"));
+            });
+
+            $(".permission-list2 dt input:checkbox").click(function () {
+                if ($(this).prop("checked")) {
+                    $(this).parents(".permission-list").find("dt").first().find("input:checkbox").prop("checked", true);
+                } else {
+                    var checkedLength = $(this).parents("dd").find("input:checked").length;
+                    if (checkedLength == 0) {
+                        $(this).parents(".permission-list").find("dt").first().find("input:checkbox").prop("checked", false);
+                    }
+                }
+            });
+        });
+    </script>
+}
