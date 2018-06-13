@@ -74,10 +74,10 @@ namespace BaseFrame.DAL
         public static BackendConfiguration GetBackendConfiguration()
         {
             BackendConfiguration backend = new BackendConfiguration();
-            //backend.Backend = "MsSql";
-            //backend.ProviderName = "System.Data.SqlClient";
-            backend.Backend = "Oracle";
-            backend.ProviderName = "Oracle.ManagedDataAccess.Client";
+            backend.Backend = "MsSql";
+            backend.ProviderName = "System.Data.SqlClient";
+            //backend.Backend = "Oracle";
+            //backend.ProviderName = "Oracle.ManagedDataAccess.Client";
 
             CustomizeBackendConfiguration(ref backend);
 

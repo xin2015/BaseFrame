@@ -15,11 +15,11 @@ namespace BaseFrame.Console
     {
         static void Main(string[] args)
         {
-            FTPHelper helper = new FTPHelper("ftp://202.104.69.206:21", "weatheruser", "weatheruser!2017");
-            string a = helper.GetString("", "NLST");
-            string b = helper.GetString("", "LIST");
-            string c = helper.GetString("FA", "NLST");
-            string d = helper.GetString("FA", "LIST");
+            using (FluentModel db = new FluentModel())
+            {
+                db.UpdateSchema();
+                db.InitData();
+            }
         }
     }
 }
