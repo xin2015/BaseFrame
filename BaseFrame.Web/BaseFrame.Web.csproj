@@ -128,6 +128,7 @@
     <Compile Include="Attributes\SuncereHandleErrorAttribute.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\SystemController.cs" />
+    <Compile Include="Controllers\UploadController.cs" />
     <Compile Include="Extensions\HttpSessionStateBaseExtension.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -1297,6 +1298,7 @@
     <Content Include="Views\Home\CurrentUserEdit.cshtml" />
     <Content Include="Views\System\AuditLogList2.cshtml" />
     <None Include="Properties\PublishProfiles\BaseFrame.pubxml" />
+    <Content Include="Views\Upload\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BaseFrame.BLL\BaseFrame.BLL.csproj">
