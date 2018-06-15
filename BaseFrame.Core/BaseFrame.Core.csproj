@@ -34,6 +34,10 @@
       <HintPath>..\packages\BouncyCastle.1.8.2\lib\BouncyCastle.Crypto.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="DotNetZip, Version=1.11.0.0, Culture=neutral, PublicKeyToken=6583c7c814667745, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetZip.1.11.0\lib\net20\DotNetZip.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -55,16 +59,34 @@
     <Compile Include="FastReflection\FastReflectionFactory.cs" />
     <Compile Include="FastReflection\MethodInvoker.cs" />
     <Compile Include="FastReflection\PropertyAccessor.cs" />
+    <Compile Include="Helpers\BatHelper.cs" />
     <Compile Include="Helpers\FTPHelper.cs" />
     <Compile Include="Helpers\HttpHelper.cs" />
+    <Compile Include="Helpers\IPHelper.cs" />
     <Compile Include="Helpers\LanguageHelper.cs" />
+    <Compile Include="Helpers\RegistryHelper.cs" />
     <Compile Include="Helpers\RSACSharpJavaConvertHelper.cs" />
+    <Compile Include="Helpers\ShortcutHelper.cs" />
+    <Compile Include="Helpers\SortHelper.cs" />
+    <Compile Include="Helpers\SqlHelper.cs" />
     <Compile Include="Helpers\XmlSerializerHelper.cs" />
+    <Compile Include="Helpers\ZipHelper.cs" />
     <Compile Include="Models\AjaxResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="IWshRuntimeLibrary">
+      <Guid>{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

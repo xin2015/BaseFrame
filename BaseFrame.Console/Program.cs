@@ -22,8 +22,9 @@ namespace BaseFrame.Console
             //    db.InitData();
             //}
 
-            FTPHelper helper = new FTPHelper("ftp://202.104.69.206/Data/Upload", "admin", "suncereltd@2017");
-            helper.DownloadFile2("20180611.zip", "D:\\20180611.zip");
+            //FTPHelper helper = new FTPHelper("ftp://202.104.69.206/Data/Upload", "admin", "suncereltd@2017");
+
+            ShortcutHelper.Demo();
         }
     }
 }
