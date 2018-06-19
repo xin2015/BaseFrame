@@ -36,5 +36,10 @@ namespace BaseFrame.Web.Controllers
             }
             return Json(result, JsonRequestBehavior.DenyGet);
         }
+
+        public ActionResult Test()
+        {
+            return View();
+        }
     }
 }

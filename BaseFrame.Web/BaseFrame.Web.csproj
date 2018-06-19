@@ -1299,6 +1299,7 @@
     <Content Include="Views\System\AuditLogList2.cshtml" />
     <None Include="Properties\PublishProfiles\BaseFrame.pubxml" />
     <Content Include="Views\Upload\Index.cshtml" />
+    <Content Include="Views\Upload\Test.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BaseFrame.BLL\BaseFrame.BLL.csproj">
