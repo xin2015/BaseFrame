@@ -1300,6 +1300,7 @@
     <None Include="Properties\PublishProfiles\BaseFrame.pubxml" />
     <Content Include="Views\Upload\Index.cshtml" />
     <Content Include="Views\Upload\Test.cshtml" />
+    <Content Include="Views\Home\Login3.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BaseFrame.BLL\BaseFrame.BLL.csproj">

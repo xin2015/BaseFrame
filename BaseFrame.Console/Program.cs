@@ -2,6 +2,7 @@
 using BaseFrame.Core.Extensions;
 using BaseFrame.Core.Helpers;
 using BaseFrame.DAL;
+using DotNet.Utilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,7 +25,13 @@ namespace BaseFrame.Console
 
             //FTPHelper helper = new FTPHelper("ftp://202.104.69.206/Data/Upload", "admin", "suncereltd@2017");
 
-            ShortcutHelper.Demo();
+            for (int i = 0; i < 10; i++)
+            {
+                System.Console.WriteLine(CaptchaHelper.Captcha("", 4, 1));
+                System.Console.WriteLine(CaptchaHelper.Captcha("", 4, 2));
+                System.Console.WriteLine(CaptchaHelper.Captcha(""));
+                System.Threading.Thread.Sleep(1000);
+            }
         }
     }
 }

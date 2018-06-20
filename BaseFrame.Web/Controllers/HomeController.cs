@@ -184,6 +184,79 @@ namespace BaseFrame.Web.Controllers
         }
         #endregion
 
+        #region 验证码
+        public ActionResult Login3(string returnUrl)
+        {
+            if (string.IsNullOrWhiteSpace(returnUrl))
+            {
+                returnUrl = Request.ApplicationPath;
+            }
+            SuncereUser user = Session.GetCurrentUser();
+            if (user == null)
+            {
+                ViewData["returnUrl"] = returnUrl;
+                return View();
+            }
+            else
+            {
+                return Redirect(returnUrl);
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Login3(string userName, string password, string returnUrl)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(userName))
+                {
+                    throw new Exception("请输入用户名");
+                }
+                if (string.IsNullOrEmpty(password))
+                {
+                    throw new Exception("请输入密码");
+                }
+                FluentModel db = Session.GetFluentModel();
+                SuncereUserRepository userRepository = new SuncereUserRepository(db);
+                SuncereUser user = userRepository.FirstOrDefault(userName, true);
+                if (user == null)
+                {
+                    throw new Exception("用户名不存在或已停用，请核对后重新登录");
+                }
+                if (AsymmetricEncryption.Default.Decrypt(user.Password) != password)
+                {
+                    throw new Exception("密码错误，请核对后重新登录");
+                }
+                user.LastLoginTime = DateTime.Now;
+                user.LastLoginHostAddress = Request.UserHostAddress;
+                db.SaveChanges();
+
+                Session.SetCurrentUser(user);
+
+                List<SuncerePermission> userPermissions = new List<SuncerePermission>();
+                foreach (SuncereRole role in user.SuncereRoles.Where(o => o.Status))
+                {
+                    foreach (SuncerePermission permission in role.SuncerePermissions.Where(o => o.Status))
+                    {
+                        if (!userPermissions.Contains(permission))
+                        {
+                            userPermissions.Add(permission);
+                        }
+                    }
+                }
+                Session.SetUserPermissions(userPermissions);
+
+                return Redirect(returnUrl);
+            }
+            catch (Exception e)
+            {
+                ViewData["message"] = e.Message;
+                return View();
+            }
+        }
+        #endregion
+
         public ActionResult Logout()
         {
             Session.CloseFluentModel();

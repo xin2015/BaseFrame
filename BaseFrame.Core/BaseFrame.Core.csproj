@@ -60,6 +60,7 @@
     <Compile Include="FastReflection\MethodInvoker.cs" />
     <Compile Include="FastReflection\PropertyAccessor.cs" />
     <Compile Include="Helpers\BatHelper.cs" />
+    <Compile Include="Helpers\CaptchaHelper.cs" />
     <Compile Include="Helpers\FTPHelper.cs" />
     <Compile Include="Helpers\HttpHelper.cs" />
     <Compile Include="Helpers\IPHelper.cs" />
