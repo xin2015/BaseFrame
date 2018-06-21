@@ -32,7 +32,7 @@
     <div class="header"></div>
     <div class="loginWraper">
         <div id="loginform" class="loginBox" @(string.IsNullOrEmpty(message) ? "" : "style=height:302px")>
-            <form class="form form-horizontal" action="/Home/Login" method="post" id="form-login">
+            <form class="form form-horizontal" action="/Home/Login3" method="post" id="form-login">
                 @Html.AntiForgeryToken()
                 @Html.Hidden("returnUrl", ViewData["returnUrl"])
                 <div class="row cl">
@@ -49,9 +49,9 @@
                 </div>
                 <div class="row cl">
                     <div class="formControls col-xs-8 col-xs-offset-3">
-                        <input class="input-text size-L" type="text" placeholder="验证码" onblur="if(this.value==''){this.value='验证码:'}" onclick="if(this.value=='验证码:'){this.value='';}" value="验证码:" style="width:150px;">
-                        <img src="images/VerifyCode.aspx.png">
-                        <a id="kanbuq" href="javascript:;">看不清，换一张</a>
+                        <input name="captcha" class="input-text size-L" type="text" placeholder="验证码" onblur="if(this.value==''){this.value='验证码:'}" onclick="if(this.value=='验证码:'){this.value='';}" value="验证码:" style="width:150px;">
+                        <img src="@ViewData["captchaPath"]">
+                        <a id="btnRefreshCaptcha" href="javascript:;">看不清，换一张</a>
                     </div>
                 </div>
                 @if (!string.IsNullOrEmpty(message))
@@ -82,6 +82,16 @@
             var s = document.getElementsByTagName("script")[0];
             s.parentNode.insertBefore(hm, s);
         })();
+
+        $(document).ready(function () {
+            $("#btnRefreshCaptcha").click(function () {
+                $.ajax({
+                    url: '/Home/RefreshCaptcha',
+                }).done(function (result) {
+                    $("#btnRefreshCaptcha").prev().attr("src", result);
+                });
+            });
+        });
     </script>
 </body>
 </html>

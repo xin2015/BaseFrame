@@ -10,6 +10,7 @@ namespace BaseFrame.Web.Extensions
         public const string FluentModel = "FluentModel";
         public const string CurrentUser = "CurrentUser";
         public const string UserPermissions = "UserPermissions";
+        public const string Captcha = "Captcha";
 
         public static FluentModel GetFluentModel(this HttpSessionStateBase session)
         {
@@ -50,6 +51,16 @@ namespace BaseFrame.Web.Extensions
         public static List<SuncerePermission> GetUserPermissions(this HttpSessionStateBase session)
         {
             return session[UserPermissions] as List<SuncerePermission>;
+        }
+
+        public static void SetCaptcha(this HttpSessionStateBase session, string captcha)
+        {
+            session[Captcha] = captcha;
+        }
+
+        public static string GetCaptcha(this HttpSessionStateBase session)
+        {
+            return session[Captcha] as string;
         }
     }
 }

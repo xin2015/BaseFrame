@@ -195,6 +195,10 @@ namespace BaseFrame.Web.Controllers
             if (user == null)
             {
                 ViewData["returnUrl"] = returnUrl;
+                string path = string.Format("/Captchas/{0}.jpg", Guid.NewGuid());
+                string captcha = CaptchaHelper.Captcha(Server.MapPath(path));
+                Session.SetCaptcha(captcha);
+                ViewData["captchaPath"] = path;
                 return View();
             }
             else
@@ -205,7 +209,7 @@ namespace BaseFrame.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Login3(string userName, string password, string returnUrl)
+        public ActionResult Login3(string userName, string password, string captcha, string returnUrl)
         {
             try
             {
@@ -216,6 +220,14 @@ namespace BaseFrame.Web.Controllers
                 if (string.IsNullOrEmpty(password))
                 {
                     throw new Exception("请输入密码");
+                }
+                if (string.IsNullOrEmpty(captcha))
+                {
+                    throw new Exception("请输入验证码");
+                }
+                if (captcha != Session.GetCaptcha())
+                {
+                    throw new Exception("验证码错误，请核对后重新登录");
                 }
                 FluentModel db = Session.GetFluentModel();
                 SuncereUserRepository userRepository = new SuncereUserRepository(db);
@@ -252,8 +264,20 @@ namespace BaseFrame.Web.Controllers
             catch (Exception e)
             {
                 ViewData["message"] = e.Message;
+                string path = string.Format("/Captchas/{0}.jpg", Guid.NewGuid());
+                captcha = CaptchaHelper.Captcha(Server.MapPath(path));
+                Session.SetCaptcha(captcha);
+                ViewData["captchaPath"] = path;
                 return View();
             }
+        }
+
+        public ActionResult RefreshCaptcha()
+        {
+            string path = string.Format("/Captchas/{0}.jpg", Guid.NewGuid());
+            string captcha = CaptchaHelper.Captcha(Server.MapPath(path));
+            Session.SetCaptcha(captcha);
+            return Json(path, JsonRequestBehavior.AllowGet);
         }
         #endregion
 
