@@ -25,31 +25,14 @@ namespace BaseFrame.Console
 
             //FTPHelper helper = new FTPHelper("ftp://202.104.69.206/Data/Upload", "admin", "suncereltd@2017");
 
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    System.Console.WriteLine(CaptchaHelper.Captcha(string.Format("D:\\captcha{0}1.jpg", i), 4, 1));
-            //    System.Console.WriteLine(CaptchaHelper.Captcha(string.Format("D:\\captcha{0}2.jpg", i), 4, 2));
-            //    System.Console.WriteLine(CaptchaHelper.Captcha(string.Format("D:\\captcha{0}3.jpg", i)));
-            //}
-
-            Random _rand = new Random();
-            foreach (FontFamily ff in FontHelper.DefaultFontFamilies)
+            for (int i = 0; i < 10; i++)
             {
-                Bitmap bmap = new Bitmap(32 * 36, 32);
-                Graphics g = Graphics.FromImage(bmap);
-
-                // Create font and brush.
-                Font drawFont = new Font(ff, 24);
-                char[] chars = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
-
-                for (int i = 0; i < 36; i++)
-                {
-                    SolidBrush drawBrush = new SolidBrush(ColorHelper.DefaultColors[1]);
-                    g.DrawString(chars[i].ToString(), drawFont, drawBrush, 32 * i + 3, 0);
-                }
-
-                bmap.Save(string.Format("D:\\{0}.png", ff.Name));
+                System.Console.WriteLine(CaptchaHelper.Captcha(string.Format("D:\\captcha41{0}.jpg", i), 4, 1));
+                System.Console.WriteLine(CaptchaHelper.Captcha(string.Format("D:\\captcha52{0}.jpg", i), 5, 2));
+                System.Console.WriteLine(CaptchaHelper.Captcha(string.Format("D:\\captcha63{0}.jpg", i), 6, 3));
+                System.Console.WriteLine(CaptchaHelper.Captcha(string.Format("D:\\captcha74{0}.jpg", i), 7, 4));
             }
+            System.Console.ReadLine();
         }
     }
 }

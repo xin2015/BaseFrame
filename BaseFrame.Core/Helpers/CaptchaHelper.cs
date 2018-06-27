@@ -12,23 +12,59 @@ namespace BaseFrame.Core.Helpers
     /// </summary>
     public class CaptchaHelper
     {
-        static char[] _numbers = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-        static char[] _letters = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
         static Random _rand = new Random();
 
         /// <summary>
         /// 获取验证码源
         /// </summary>
-        /// <param name="type">验证码源类型，1数字、2字母、3综合</param>
+        /// <param name="type">验证码源类型，1数字、2大写字母、3数字和大写字母、4字符（数字和大小写字母和标点符号）</param>
         /// <returns></returns>
         private static char[] GetCaptchaSource(int type)
         {
             char[] source;
             switch (type)
             {
-                case 1: { source = _numbers; break; }
-                case 2: { source = _letters; break; }
-                default: { source = _numbers.Concat(_letters).ToArray(); break; }
+                case 1:
+                    {
+                        source = new char[10];
+                        for (int i = 0; i < 10; i++)
+                        {
+                            source[i] = (char)(i + 48);
+                        }
+                        break;
+                    }
+                case 2:
+                    {
+                        source = new char[26];
+                        for (int i = 0; i < 26; i++)
+                        {
+                            source[i] = (char)(i + 65);
+                        }
+                        break;
+                    }
+                case 3:
+                    {
+                        source = new char[36];
+                        for (int i = 0; i < 10; i++)
+                        {
+                            source[i] = (char)(i + 48);
+                        }
+                        for (int i = 0; i < 26; i++)
+                        {
+                            source[i + 10] = (char)(i + 65);
+                        }
+                        break;
+                    }
+                case 4:
+                    {
+                        source = new char[95];
+                        for (int i = 0; i < 95; i++)
+                        {
+                            source[i] = (char)(i + 32);
+                        }
+                        break;
+                    }
+                default: { source = new char[0]; break; }
             }
             return source;
         }
@@ -42,7 +78,6 @@ namespace BaseFrame.Core.Helpers
         private static char[] GetCaptcha(int length, char[] source)
         {
             char[] chars = new char[length];
-            Random _rand = new Random();
             for (int i = 0; i < length; i++)
             {
                 chars[i] = source[_rand.Next(source.Length)];
@@ -102,7 +137,7 @@ namespace BaseFrame.Core.Helpers
         /// </summary>
         /// <param name="path">验证码图片路径</param>
         /// <param name="length">验证码长度</param>
-        /// <param name="type">验证码源类型，1数字、2字母、3综合</param>
+        /// <param name="type">验证码源类型，1数字、2大写字母、3数字和大写字母、4字符（数字和大小写字母和标点符号）</param>
         /// <returns></returns>
         public static string Captcha(string path, int length = 4, int type = 3)
         {
@@ -115,7 +150,7 @@ namespace BaseFrame.Core.Helpers
         /// 获取验证码
         /// </summary>
         /// <param name="length">验证码长度</param>
-        /// <param name="type">验证码源类型，1数字、2字母、3综合</param>
+        /// <param name="type">验证码源类型，1数字、2大写字母、3数字和大写字母、4字符（数字和大小写字母和标点符号）</param>
         /// <returns></returns>
         public static string Captcha(int length = 4, int type = 3)
         {
